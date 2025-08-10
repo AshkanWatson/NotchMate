@@ -51,7 +51,7 @@
 - Hit **Run** ▶️ in Xcode.
 
 | Widget  | Description |
-|----------|----------|---------------|
+|----------|----------|
 | **🕒 Clock** | Digital time display centered under the notch |
 | **🔋 Battery** | Real-time battery % above the notch |
 | **🎵 Music Player** | Now playing info + playback control (Apple Music) |
