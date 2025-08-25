@@ -19,7 +19,7 @@
 
 ## 📸 Screenshots
 
-> _(Add screenshots of your notch area with the overlay here!)_
+> _(Coming Soon)_
 
 ---
 
@@ -45,6 +45,8 @@
 `open NotchMate.xcodeproj`
 3. **Build & Run**
 
+---
+
 ### 🧩 Widgets Included
 
 - Select your Mac as the run target.
@@ -57,11 +59,15 @@
 | **🎵 Music Player** | Now playing info + playback control (Apple Music) |
 | **🟣 Animation** | Smooth animated dots for fun |
 
+---
+
 ### 🎧 Music Control Support
 
 - Integrated with `MPMusicPlayerController`
 - Automatically shows current track & artist
 - Ready for **play/pause/next/previous** controls (clickable controls coming soon!)
+
+---
 
 ### 🛠️ Built With
 
@@ -69,6 +75,8 @@
 - [AppKit](https://developer.apple.com/documentation/appkit) – For custom macOS UI
 - [MediaPlayer](https://developer.apple.com/documentation/mediaplayer) – For music control
 - [IOKit](https://developer.apple.com/documentation/iokit) – For battery status
+
+---
 
 ### 🤝 Contributing
 
@@ -80,13 +88,19 @@ Want to add widgets? Improve animations? Make the notch dance?
 4. Push to your branch (`git push origin feature/music-widget`)
 5. Open a Pull Request
 
+---
+
 ### 📄 License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
 
+---
+
 ### 🙌 Acknowledgements
 
 Inspired by NotchNook — but made for everyone, open-source and free forever.
+
+---
 
 ### 💡 Future Plans
 
@@ -96,4 +110,7 @@ Inspired by NotchNook — but made for everyone, open-source and free forever.
 - Clickable playback buttons
 - CPU/Network widgets
 
+---
+
 **⭐️ Star NotchMate if you love open-source UI creativity for your MacBook notch!**
+Made with ❤️ by AshkanWatson and the NotchMate Community.
