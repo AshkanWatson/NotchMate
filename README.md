@@ -113,4 +113,5 @@ Inspired by NotchNook — but made for everyone, open-source and free forever.
 ---
 
 **⭐️ Star NotchMate if you love open-source UI creativity for your MacBook notch!**
+
 Made with ❤️ by AshkanWatson and the NotchMate Community.
