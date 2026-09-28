@@ -21,8 +21,8 @@ final class NotchController: ObservableObject {
     private var tracker = HoverTracker()
     private var panel: NotchPanel?
     private let pointer = PointerMonitor()
-    private var openTask: Task<Void, Never>?
-    private var closeTask: Task<Void, Never>?
+    private var openWork: DispatchWorkItem?
+    private var closeWork: DispatchWorkItem?
     private var watchdog: Timer?
     private var observers: [NSObjectProtocol] = []
 
@@ -83,8 +83,8 @@ final class NotchController: ObservableObject {
             NSWorkspace.shared.notificationCenter.removeObserver(observer)
         }
         observers.removeAll()
-        openTask?.cancel()
-        closeTask?.cancel()
+        openWork?.cancel()
+        closeWork?.cancel()
         watchdog?.invalidate()
         panel?.orderOut(nil)
     }
@@ -174,17 +174,17 @@ final class NotchController: ObservableObject {
     private func perform(_ effect: NotchEffect) {
         switch effect {
         case .scheduleOpen(let delay):
-            openTask?.cancel()
-            openTask = send(.openTimerFired, after: delay)
+            openWork?.cancel()
+            openWork = send(.openTimerFired, after: delay)
         case .cancelOpen:
-            openTask?.cancel()
-            openTask = nil
+            openWork?.cancel()
+            openWork = nil
         case .scheduleClose(let delay):
-            closeTask?.cancel()
-            closeTask = send(.closeTimerFired, after: delay)
+            closeWork?.cancel()
+            closeWork = send(.closeTimerFired, after: delay)
         case .cancelClose:
-            closeTask?.cancel()
-            closeTask = nil
+            closeWork?.cancel()
+            closeWork = nil
         case .expand:
             setState(.expanded)
         case .collapse:
@@ -192,12 +192,12 @@ final class NotchController: ObservableObject {
         }
     }
 
-    private func send(_ event: NotchEvent, after delay: TimeInterval) -> Task<Void, Never> {
-        Task { [weak self] in
-            try? await Task.sleep(nanoseconds: UInt64(delay * 1_000_000_000))
-            guard !Task.isCancelled else { return }
-            self?.send(event)
+    private func send(_ event: NotchEvent, after delay: TimeInterval) -> DispatchWorkItem {
+        let work = DispatchWorkItem { [weak self] in
+            MainActor.assumeIsolated { self?.send(event) }
         }
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay, execute: work)
+        return work
     }
 
     private func setState(_ newState: NotchState) {

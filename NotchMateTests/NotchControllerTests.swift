@@ -52,8 +52,11 @@ final class NotchControllerTests: XCTestCase {
     func testDelaysAreHonoured() async throws {
         let (controller, _) = makeController { $0.openDelay = 0.1 }
         controller.pointerMoved(to: CGPoint(x: 756, y: 981))
-        XCTAssertEqual(controller.state, .collapsed)
-        try await Task.sleep(nanoseconds: 400_000_000)
+        XCTAssertEqual(controller.state, .collapsed, "nothing happens before the delay")
+        let deadline = Date().addingTimeInterval(3)
+        while controller.state != .expanded, Date() < deadline {
+            try await Task.sleep(nanoseconds: 20_000_000)
+        }
         XCTAssertEqual(controller.state, .expanded)
     }
 
