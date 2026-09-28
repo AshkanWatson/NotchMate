@@ -71,8 +71,9 @@ final class NotchInteractionUITests: XCTestCase {
             XCTAssertTrue(compact.waitForExistence(timeout: 10))
             XCTAssertEqual(compact.frame.width, size.width, accuracy: 1)
             XCTAssertEqual(compact.frame.height, size.height, accuracy: 1)
+            let compactMidX = compact.frame.midX // the compact element disappears once expanded
             let expanded = hoverNotch(in: app)
-            XCTAssertEqual(expanded.frame.midX, compact.frame.midX, accuracy: 2)
+            XCTAssertEqual(expanded.frame.midX, compactMidX, accuracy: 2)
             app.terminate()
         }
     }
