@@ -1,26 +1,25 @@
-# Xcode related
+# macOS
+.DS_Store
+
+# Xcode
+build/
+dist/
 **/DerivedData/
 *.xcworkspace
+!*.xcodeproj/project.xcworkspace/
 *.xcuserstate
 *.xccheckout
+xcuserdata/
 *.xcodeproj/*
 !*.xcodeproj/project.pbxproj
 !*.xcodeproj/xcshareddata/
 !*.xcworkspace/contents.xcworkspacedata
+*.xcresult
 
 # Swift Package Manager
 .build/
+.swiftpm/
+Packages/*/Package.resolved
 
-# CocoaPods
-**/Pods/
-ios/Podfile.lock
-macos/Podfile.lock
-
-# Carthage
-Carthage/Build/
-
-# Fastlane
-fastlane/report.xml
-fastlane/Preview.html
-fastlane/screenshots
-fastlane/test_output
+# Python (icon generator)
+__pycache__/

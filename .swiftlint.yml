@@ -1,0 +1,31 @@
+included:
+  - NotchMate
+  - NotchMateTests
+  - NotchMateUITests
+  - Packages/NotchMateKit/Sources
+  - Packages/NotchMateKit/Tests
+excluded:
+  - build
+  - Packages/NotchMateKit/.build
+
+line_length:
+  warning: 160
+  error: 200
+identifier_name:
+  excluded: [x, y, id]
+cyclomatic_complexity:
+  warning: 15
+function_body_length:
+  warning: 80
+type_body_length:
+  warning: 300
+file_length:
+  warning: 500
+
+opt_in_rules:
+  - empty_count
+  - first_where
+  - sorted_first_last
+  - closure_spacing
+  - redundant_nil_coalescing
+  - unneeded_parentheses_in_closure_argument

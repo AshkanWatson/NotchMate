@@ -1,0 +1,105 @@
+name: CI
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+  workflow_dispatch:
+  # The release workflow runs the full suite through this entry point first.
+  workflow_call:
+
+permissions:
+  contents: write # only used to commit refreshed README screenshots (see last step)
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name != 'workflow_call' }}
+
+jobs:
+  test:
+    name: Lint, test & package
+    runs-on: macos-15
+    timeout-minutes: 60
+    env:
+      DERIVED_DATA: build/DerivedData-tests
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: latest-stable
+
+      - name: Toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+          system_profiler SPDisplaysDataType | sed -n '/Displays:/,$p' || true
+
+      - name: SwiftLint
+        run: |
+          command -v swiftlint >/dev/null || brew install swiftlint
+          swiftlint version
+          swiftlint lint --strict --reporter github-actions-logging
+
+      - name: NotchMateKit unit tests
+        run: swift test --package-path Packages/NotchMateKit
+
+      - name: Build app and tests (warnings are errors)
+        run: |
+          xcodebuild -project NotchMate.xcodeproj -scheme NotchMate -destination 'platform=macOS' \
+            -derivedDataPath "$DERIVED_DATA" NOTCHMATE_STRICT_WARNINGS=YES \
+            build-for-testing
+
+      - name: App unit tests
+        run: |
+          xcodebuild -project NotchMate.xcodeproj -scheme NotchMate -destination 'platform=macOS' \
+            -derivedDataPath "$DERIVED_DATA" -resultBundlePath build/UnitTests.xcresult \
+            test-without-building -only-testing:NotchMateTests
+
+      - name: UI tests
+        env:
+          TEST_RUNNER_NOTCHMATE_SCREENSHOT_DIR: ${{ github.workspace }}/build/screenshots
+        run: |
+          xcodebuild -project NotchMate.xcodeproj -scheme NotchMate -destination 'platform=macOS' \
+            -derivedDataPath "$DERIVED_DATA" -resultBundlePath build/UITests.xcresult \
+            test-without-building -only-testing:NotchMateUITests
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v6
+        with:
+          name: test-results
+          path: |
+            build/*.xcresult
+            build/screenshots
+          if-no-files-found: ignore
+
+      - name: Release build
+        run: scripts/build-release.sh
+
+      - name: Create and verify DMG
+        run: |
+          scripts/make-dmg.sh build/NotchMate.app ci-${GITHUB_SHA::7}
+          scripts/verify-dmg.sh dist/NotchMate-ci-${GITHUB_SHA::7}.dmg
+
+      - name: Upload DMG
+        uses: actions/upload-artifact@v6
+        with:
+          name: NotchMate-dmg
+          path: dist/*.dmg
+
+      # Push a commit containing "[screenshots]" to refresh docs/screenshots from this run.
+      - name: Commit refreshed screenshots
+        if: github.event_name == 'push' && !startsWith(github.ref, 'refs/tags/') && contains(github.event.head_commit.message, '[screenshots]')
+        run: |
+          mkdir -p docs/screenshots
+          cp build/screenshots/*.png docs/screenshots/
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/screenshots
+          if git diff --cached --quiet; then
+            echo "Screenshots unchanged"
+          else
+            git commit -m "docs: refresh README screenshots from CI run ${GITHUB_RUN_ID}"
+            git push origin "HEAD:${GITHUB_REF_NAME}"
+          fi
