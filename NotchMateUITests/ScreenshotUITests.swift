@@ -1,7 +1,7 @@
 import XCTest
 
 /// Captures the README screenshots from the running app.
-/// Run with `TEST_RUNNER_NOTCHMATE_SCREENSHOT_DIR=<dir>` to also write cropped PNGs.
+/// Extract them with `python3 scripts/export-screenshots.py <result bundle> docs/screenshots`.
 final class ScreenshotUITests: XCTestCase {
     override func setUpWithError() throws {
         continueAfterFailure = false

@@ -57,12 +57,13 @@ jobs:
             test-without-building -only-testing:NotchMateTests
 
       - name: UI tests
-        env:
-          TEST_RUNNER_NOTCHMATE_SCREENSHOT_DIR: ${{ github.workspace }}/build/screenshots
         run: |
           xcodebuild -project NotchMate.xcodeproj -scheme NotchMate -destination 'platform=macOS' \
             -derivedDataPath "$DERIVED_DATA" -resultBundlePath build/UITests.xcresult \
             test-without-building -only-testing:NotchMateUITests
+
+      - name: Export README screenshots
+        run: python3 scripts/export-screenshots.py build/UITests.xcresult build/screenshots
 
       - name: Upload test results
         if: always()
@@ -94,6 +95,7 @@ jobs:
         run: |
           mkdir -p docs/screenshots
           cp build/screenshots/*.png docs/screenshots/
+          ls -la docs/screenshots
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add docs/screenshots

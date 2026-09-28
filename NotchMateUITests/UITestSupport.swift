@@ -58,20 +58,19 @@ extension XCTestCase {
         element.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 1)).withOffset(CGVector(dx: 0, dy: 350)).hover()
     }
 
-    /// Saves a screenshot as a test attachment and, when `NOTCHMATE_SCREENSHOT_DIR`
-    /// is set (via `TEST_RUNNER_NOTCHMATE_SCREENSHOT_DIR`), as a cropped PNG file.
+    /// Captures the screen and attaches two images to the test result: the full screen
+    /// (`<name>-fullscreen`) and, cropped around `region`, `readme-<name>`.
+    /// CI exports the `readme-` attachments into `docs/screenshots` (see `scripts/export-screenshots.py`).
     @MainActor
     func captureScreenshot(named name: String, around region: CGRect?, margin: CGSize = CGSize(width: 60, height: 40)) {
         let screenshot = XCUIScreen.main.screenshot()
-        let attachment = XCTAttachment(screenshot: screenshot)
-        attachment.name = name
-        attachment.lifetime = .keepAlways
-        add(attachment)
+        let fullScreen = XCTAttachment(screenshot: screenshot)
+        fullScreen.name = "\(name)-fullscreen"
+        fullScreen.lifetime = .keepAlways
+        add(fullScreen)
 
-        guard let directory = ProcessInfo.processInfo.environment["NOTCHMATE_SCREENSHOT_DIR"],
-              var image = screenshot.image.cgImage(forProposedRect: nil, context: nil, hints: nil),
+        guard var image = screenshot.image.cgImage(forProposedRect: nil, context: nil, hints: nil),
               let screen = NSScreen.screens.first else { return }
-
         if let region {
             let scale = CGFloat(image.width) / screen.frame.width
             var crop = region.insetBy(dx: -margin.width, dy: -margin.height)
@@ -82,9 +81,10 @@ extension XCTestCase {
                 image = cropped
             }
         }
-        let url = URL(fileURLWithPath: directory).appendingPathComponent("\(name).png")
-        try? FileManager.default.createDirectory(atPath: directory, withIntermediateDirectories: true)
-        let data = NSBitmapImageRep(cgImage: image).representation(using: .png, properties: [:])
-        try? data?.write(to: url)
+        guard let png = NSBitmapImageRep(cgImage: image).representation(using: .png, properties: [:]) else { return }
+        let cropped = XCTAttachment(data: png, uniformTypeIdentifier: "public.png")
+        cropped.name = "readme-\(name)"
+        cropped.lifetime = .keepAlways
+        add(cropped)
     }
 }
