@@ -14,6 +14,9 @@ struct NotchRootView: View {
         if let layout = controller.layout {
             notch(in: layout)
                 .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
+                // On notched displays AppKit reports the camera housing as a top safe-area
+                // inset for windows covering it; the notch view must draw right into it.
+                .ignoresSafeArea()
         }
     }
 
