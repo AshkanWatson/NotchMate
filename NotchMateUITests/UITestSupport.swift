@@ -14,9 +14,11 @@ enum NotchID {
 extension XCUIApplication {
     /// Launches NotchMate in a deterministic state: default settings, short delays,
     /// no haptics and no Apple Events.
-    static func launchNotchMate(_ arguments: [String] = []) -> XCUIApplication {
+    /// - Parameter fastDelays: Shortens the hover delays; turn off to show the real defaults (e.g. in screenshots).
+    static func launchNotchMate(_ arguments: [String] = [], fastDelays: Bool = true) -> XCUIApplication {
         let app = XCUIApplication()
-        app.launchArguments = ["--ui-testing", "--reset-settings", "-openDelay", "0.05", "-closeDelay", "0.1"] + arguments
+        let delays = fastDelays ? ["-openDelay", "0.05", "-closeDelay", "0.1"] : []
+        app.launchArguments = ["--ui-testing", "--reset-settings"] + delays + arguments
         app.launch()
         return app
     }

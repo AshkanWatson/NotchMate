@@ -36,7 +36,7 @@ final class ScreenshotUITests: XCTestCase {
 
     @MainActor
     func testCaptureSettings() {
-        let app = XCUIApplication.launchNotchMate(["--open-settings"])
+        let app = XCUIApplication.launchNotchMate(["--open-settings"], fastDelays: false)
         let window = app.windows.matching(identifier: NotchID.settingsWindow).firstMatch
         let fallback = app.element(NotchID.settingsWindow)
         XCTAssertTrue(fallback.waitForExistence(timeout: 10))
