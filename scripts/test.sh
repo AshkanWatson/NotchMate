@@ -22,7 +22,7 @@ echo "▸ NotchMateKit unit tests"
 swift test --package-path Packages/NotchMateKit
 
 echo "▸ Build (warnings are errors)"
-xcodebuild "${COMMON[@]}" SWIFT_TREAT_WARNINGS_AS_ERRORS=YES build-for-testing -quiet
+xcodebuild "${COMMON[@]}" NOTCHMATE_STRICT_WARNINGS=YES build-for-testing -quiet
 
 echo "▸ App unit tests"
 xcodebuild "${COMMON[@]}" test-without-building -only-testing:NotchMateTests -quiet

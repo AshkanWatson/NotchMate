@@ -47,7 +47,7 @@ jobs:
       - name: Build app and tests (warnings are errors)
         run: |
           xcodebuild -project NotchMate.xcodeproj -scheme NotchMate -destination 'platform=macOS' \
-            -derivedDataPath "$DERIVED_DATA" SWIFT_TREAT_WARNINGS_AS_ERRORS=YES \
+            -derivedDataPath "$DERIVED_DATA" NOTCHMATE_STRICT_WARNINGS=YES \
             build-for-testing
 
       - name: App unit tests
@@ -66,7 +66,7 @@ jobs:
 
       - name: Upload test results
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: test-results
           path: |
@@ -83,7 +83,7 @@ jobs:
           scripts/verify-dmg.sh dist/NotchMate-ci-${GITHUB_SHA::7}.dmg
 
       - name: Upload DMG
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: NotchMate-dmg
           path: dist/*.dmg

@@ -34,24 +34,25 @@ final class NowPlayingService: ObservableObject {
             info = nil
             return
         }
-        queue.async { [weak self] in
+        queue.async {
             let results = players.compactMap { player -> NowPlayingInfo? in
                 guard let output = Self.run(player.statusScript) else { return nil }
                 return NowPlayingInfo.parse(output, player: player)
             }
             let preferred = NowPlayingInfo.preferred(results)
-            DispatchQueue.main.async {
-                MainActor.assumeIsolated { self?.info = preferred }
+            Task { @MainActor [weak self] in
+                self?.info = preferred
             }
         }
     }
 
     func send(_ command: MediaCommand) {
         guard isEnabled, let player = info?.player else { return }
-        queue.async { [weak self] in
+        queue.async {
             _ = Self.run(player.commandScript(command))
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.25) {
-                MainActor.assumeIsolated { self?.refresh() }
+            Task { @MainActor [weak self] in
+                try? await Task.sleep(nanoseconds: 250_000_000)
+                self?.refresh()
             }
         }
     }

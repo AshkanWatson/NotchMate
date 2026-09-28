@@ -2,6 +2,7 @@ import SwiftUI
 import XCTest
 @testable import NotchMate
 
+@MainActor
 final class NotchShapeTests: XCTestCase {
     private let rect = CGRect(x: 0, y: 0, width: 200, height: 32)
 
