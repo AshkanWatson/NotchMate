@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(CoreGraphics)
+import CoreGraphics
+#endif
 
 /// A platform-independent snapshot of a display, captured from `NSScreen`.
 ///

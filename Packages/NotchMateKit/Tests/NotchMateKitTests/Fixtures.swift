@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(CoreGraphics)
+import CoreGraphics
+#endif
 @testable import NotchMateKit
 
 /// Representative displays in their default "looks like" resolutions (points).

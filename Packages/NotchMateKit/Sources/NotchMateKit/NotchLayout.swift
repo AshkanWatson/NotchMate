@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(CoreGraphics)
+import CoreGraphics
+#endif
 
 /// All rectangles NotchMate needs to draw and hit-test the notch on one display.
 ///

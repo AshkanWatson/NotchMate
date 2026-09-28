@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(CoreGraphics)
+import CoreGraphics
+#endif
 
 /// A media player NotchMate can read and control through Apple Events.
 public enum MediaPlayer: String, CaseIterable, Sendable {

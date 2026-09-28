@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(CoreGraphics)
+import CoreGraphics
+#endif
 
 /// Decides whether the mouse pointer is "at the notch".
 public enum NotchHitTesting {

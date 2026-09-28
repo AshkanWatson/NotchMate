@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(CoreGraphics)
+import CoreGraphics
+#endif
 
 public enum NotchState: String, Equatable, Sendable {
     /// Only the notch-sized shape is shown. On a notched display it is invisible.

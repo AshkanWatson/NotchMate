@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(CoreGraphics)
+import CoreGraphics
+#endif
 
 /// Battery state, parsed from an IOKit power source description dictionary.
 public struct BatteryInfo: Equatable, Sendable {

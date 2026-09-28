@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(CoreGraphics)
+import CoreGraphics
+#endif
 
 /// The subset of `UserDefaults` NotchMate needs; lets tests use an in-memory store.
 public protocol KeyValueStore: AnyObject {

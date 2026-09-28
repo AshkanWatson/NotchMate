@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(CoreGraphics)
+import CoreGraphics
+#endif
 
 /// Where NotchMate draws its notch on a particular display.
 public struct NotchPlacement: Equatable, Sendable {

@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(CoreGraphics)
+import CoreGraphics
+#endif
 
 /// Spring parameters for the expand/collapse transition.
 public struct NotchAnimation: Equatable, Sendable {

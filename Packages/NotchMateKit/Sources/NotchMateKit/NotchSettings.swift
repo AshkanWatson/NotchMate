@@ -1,4 +1,7 @@
 import Foundation
+#if canImport(CoreGraphics)
+import CoreGraphics
+#endif
 
 public enum DisplayPreference: String, CaseIterable, Sendable {
     /// The display with a notch if there is one, otherwise the one with the menu bar.
